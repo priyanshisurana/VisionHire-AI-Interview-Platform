@@ -1,0 +1,227 @@
+@keyframes floatCard {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.setup-page {
+  color: inherit;
+}
+
+.setup-header {
+  max-width: 820px;
+  margin-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.setup-header h1 {
+  margin: 0;
+  font-size: clamp(2.3rem, 4.5vw, 3rem);
+  line-height: 1.12;
+}
+
+.setup-header h1 span {
+  color: #1f8276;
+}
+
+body.dark-theme .setup-header h1 span {
+  color: #8fffe8;
+}
+
+.setup-header p {
+  margin: 0;
+  max-width: 640px;
+  font-size: 1.05rem;
+  color: rgba(13, 43, 42, 0.72);
+}
+
+body.dark-theme .setup-header p {
+  color: rgba(217, 255, 244, 0.75);
+}
+
+.domain-section {
+  margin-bottom: 3rem;
+  padding: clamp(1.6rem, 4vw, 2.4rem);
+  border-radius: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.domain-section h2 {
+  margin: 0;
+  font-size: clamp(1.6rem, 3vw, 2rem);
+}
+
+.domain-subtitle {
+  margin: 0;
+  color: rgba(13, 43, 42, 0.7);
+}
+
+body.dark-theme .domain-subtitle {
+  color: rgba(207, 252, 244, 0.72);
+}
+
+.domain-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: clamp(1.2rem, 3vw, 1.8rem);
+}
+
+.domain-card {
+  position: relative;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid transparent;
+  border-radius: 18px;
+  padding: clamp(1.3rem, 3vw, 1.6rem);
+  cursor: pointer;
+  transition: transform 0.25s ease, border-color 0.2s ease, box-shadow 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  backdrop-filter: blur(6px);
+}
+
+.domain-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(19, 90, 126, 0.16);
+}
+
+.domain-card.selected {
+  border-color: rgba(33, 183, 159, 0.65);
+  box-shadow: 0 22px 46px rgba(33, 183, 159, 0.22);
+  background: linear-gradient(135deg, rgba(33, 183, 159, 0.16), rgba(68, 129, 235, 0.12));
+  animation: floatCard 5s ease-in-out infinite;
+}
+
+.domain-label {
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: #0f2c38;
+}
+
+.domain-description {
+  font-size: 0.94rem;
+  color: rgba(13, 43, 42, 0.72);
+  line-height: 1.4;
+}
+
+.domain-selected-pill {
+  align-self: flex-start;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #1dd9b7, #2187ff);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+body.dark-theme .domain-card {
+  background: rgba(15, 27, 39, 0.7);
+  color: #e2fffb;
+}
+
+body.dark-theme .domain-card.selected {
+  background: linear-gradient(135deg, rgba(31, 188, 174, 0.28), rgba(83, 151, 255, 0.24));
+  border-color: rgba(120, 255, 239, 0.38);
+}
+
+.permission-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(1.5rem, 4vw, 2.2rem);
+}
+
+.permission-card {
+  flex: 1;
+  min-width: 280px;
+  padding: clamp(1.4rem, 3.2vw, 1.8rem);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.permission-card h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.permission-desc {
+  margin: 0;
+  color: rgba(13, 43, 42, 0.7);
+}
+
+body.dark-theme .permission-desc {
+  color: rgba(207, 252, 244, 0.72);
+}
+
+.permission-status {
+  margin: 0;
+  font-size: 0.95rem;
+  color: rgba(20, 80, 74, 0.7);
+}
+
+.permission-status.granted {
+  color: #13816f;
+  font-weight: 600;
+}
+
+body.dark-theme .permission-status {
+  color: rgba(141, 255, 236, 0.8);
+}
+
+.permission-note {
+  margin: 0;
+  font-size: 0.9rem;
+  color: rgba(13, 43, 42, 0.65);
+}
+
+body.dark-theme .permission-note {
+  color: rgba(199, 250, 241, 0.7);
+}
+
+.permission-card button {
+  align-self: flex-start;
+  background: linear-gradient(135deg, #1dd9b7, #2187ff);
+  color: white;
+  border: none;
+  padding: 0.55rem 1.2rem;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.permission-card button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(25, 136, 171, 0.25);
+}
+
+.setup-actions {
+  margin-top: 3rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.setup-actions .cta-button {
+  min-width: 200px;
+  justify-content: center;
+}
+
+@media (max-width: 720px) {
+  .setup-actions {
+    flex-direction: column;
+  }
+
+  .setup-actions .cta-button {
+    width: 100%;
+  }
+}

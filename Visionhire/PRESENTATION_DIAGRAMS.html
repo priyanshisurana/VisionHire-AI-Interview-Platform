@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionHire - Presentation Diagrams</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+        }
+        .slide {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            page-break-after: always;
+            background: white;
+            margin-bottom: 20px;
+        }
+        .slide-title {
+            font-size: 2.5em;
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .diagram-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            background: #fafafa;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .mermaid {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.9;
+        }
+        @media print {
+            .slide {
+                page-break-after: always;
+                margin-bottom: 0;
+            }
+            body {
+                background: white;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Title Slide -->
+    <div class="slide">
+        <div class="header" style="width: 100%; max-width: 1200px;">
+            <h1>VisionHire</h1>
+            <p>AI-Powered Interview Platform</p>
+            <p style="margin-top: 20px; font-size: 1em; opacity: 0.8;">High-Level Design Architecture</p>
+        </div>
+    </div>
+
+    <!-- Slide 1: System Architecture -->
+    <div class="slide">
+        <h2 class="slide-title">System Architecture</h2>
+        <div class="diagram-wrapper">
+            <div class="mermaid">
+graph TB
+    subgraph Frontend["Frontend Layer (React + Vite)"]
+        A[Home Page] --> B[Login/Register]
+        B --> C[Interview Page]
+        C --> D[Guidelines Page]
+        D --> E[Setup Page]
+        E --> F[Interview Start]
+        F --> G[Result Page]
+        
+        H[Services Layer<br/>api.jsx] --> F
+        H --> G
+        
+        I[Browser APIs<br/>Speech Recognition<br/>MediaDevices] --> F
+    end
+    
+    subgraph Backend["Backend Layer (Express.js)"]
+        J[Middleware<br/>CORS, JSON, JWT] --> K[Auth Routes]
+        J --> L[Interview Routes]
+        
+        K --> M[Auth Controller<br/>register, login]
+        L --> N[Interview Controller<br/>startInterview<br/>sendAnswer<br/>getResult]
+    end
+    
+    subgraph External["External Services"]
+        O[(MongoDB<br/>Database)]
+        P[Google Gemini AI<br/>Question Generation<br/>Answer Evaluation]
+        Q[Cloudinary<br/>File Storage]
+    end
+    
+    F -->|HTTP/REST<br/>JWT Auth| J
+    G -->|HTTP/REST<br/>JWT Auth| J
+    
+    M --> O
+    N --> O
+    N --> P
+    N --> Q
+    
+    style Frontend fill:#e1f5ff
+    style Backend fill:#fff4e1
+    style External fill:#ffe1f5
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 2: User Flow -->
+    <div class="slide">
+        <h2 class="slide-title">User Flow</h2>
+        <div class="diagram-wrapper">
+            <div class="mermaid">
+flowchart TD
+    Start([User Visits Site]) --> Home[Home Page]
+    Home --> Login{User Logged In?}
+    Login -->|No| Register[Register Page]
+    Login -->|Yes| Interview[Interview Page]
+    Register --> Auth[Authentication]
+    Auth --> Interview
+    
+    Interview --> Resume[Upload Resume<br/>Optional]
+    Resume --> Guidelines[Guidelines Page]
+    Guidelines --> Setup[Setup Page]
+    
+    Setup --> Camera[Request Camera/Mic<br/>Permissions]
+    Camera --> Domain[Select Domain]
+    Domain --> StartInterview[Start Interview]
+    
+    StartInterview --> Q1[Question 1<br/>Timer: 60s]
+    Q1 --> Input{Input Method}
+    Input -->|Type| TextInput[Text Answer]
+    Input -->|Voice| VoiceInput[Voice Recognition]
+    
+    TextInput --> Submit[Submit Answer]
+    VoiceInput --> Submit
+    
+    Submit --> Evaluate[Backend: Evaluate Answer<br/>via Gemini AI]
+    Evaluate --> Score[Get Score 0-5<br/>+ Reason]
+    Score --> Check{More Questions?}
+    
+    Check -->|Yes q < 15| NextQ[Next Question]
+    NextQ --> Q1
+    
+    Check -->|No q >= 15| Complete[Interview Complete]
+    Complete --> Result[Result Page]
+    
+    Result --> Display[Display Results<br/>Total Score<br/>Q&A History<br/>Score Reasons]
+    
+    style Start fill:#90EE90
+    style Complete fill:#FFB6C1
+    style Result fill:#87CEEB
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Data Flow -->
+    <div class="slide">
+        <h2 class="slide-title">Data Flow - Interview Process</h2>
+        <div class="diagram-wrapper">
+            <div class="mermaid">
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant Backend
+    participant MongoDB
+    participant Gemini
+    
+    User->>Frontend: Click "Start Interview"
+    Frontend->>Backend: POST /api/interview/start-stream
+    Backend->>MongoDB: Create Interview Document
+    Backend->>Gemini: Generate Question
+    Gemini-->>Backend: Question Text
+    Backend-->>Frontend: {interviewId, question}
+    
+    User->>Frontend: Submit Answer
+    Frontend->>Backend: POST /api/interview/sendAnswer
+    Backend->>Gemini: Evaluate Answer
+    Gemini-->>Backend: {score, reason}
+    Backend->>MongoDB: Update History
+    
+    alt Interview Not Complete
+        Backend->>Gemini: Generate Next Question
+        Backend-->>Frontend: {question, finished: false}
+    else Interview Complete
+        Backend-->>Frontend: {finished: true}
+        Frontend->>Backend: GET /api/interview/:id
+        Backend-->>Frontend: {totalScore, history}
+    end
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: Component Structure -->
+    <div class="slide">
+        <h2 class="slide-title">Component Structure</h2>
+        <div class="diagram-wrapper">
+            <div class="mermaid">
+graph TD
+    App[App.jsx<br/>Root Router] --> Home[Home.jsx]
+    App --> Login[Login.jsx]
+    App --> Register[Register.jsx]
+    App --> Interview[Interview.jsx]
+    App --> Guidelines[Guidelines.jsx]
+    App --> Setup[Setup.jsx]
+    App --> InterviewStart[InterviewStart.jsx]
+    App --> Result[Result.jsx]
+    
+    InterviewStart --> QuestionDisplay[Question Display]
+    InterviewStart --> AnswerInput[Answer Input]
+    InterviewStart --> Timer[Timer Component]
+    InterviewStart --> Progress[Progress Bar]
+    
+    AnswerInput --> Textarea[Textarea]
+    AnswerInput --> VoiceRec[Voice Recognition]
+    
+    Result --> ScoreCard[Score Summary]
+    Result --> QAList[Q&A History]
+    
+    style App fill:#FFE4B5
+    style InterviewStart fill:#E0FFFF
+    style Result fill:#F0E68C
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: API Architecture -->
+    <div class="slide">
+        <h2 class="slide-title">API Architecture</h2>
+        <div class="diagram-wrapper">
+            <div class="mermaid">
+graph LR
+    subgraph Auth["Authentication APIs"]
+        A1[POST /api/auth/register] --> A2[Auth Controller]
+        A3[POST /api/auth/login] --> A4[Auth Controller]
+        A2 --> A5[(MongoDB)]
+        A4 --> A5
+    end
+    
+    subgraph Interview["Interview APIs"]
+        I1[POST /api/interview/start-stream] --> I2[Interview Controller]
+        I3[POST /api/interview/sendAnswer] --> I4[Interview Controller]
+        I5[GET /api/interview/:id] --> I6[Interview Controller]
+        
+        I2 --> I7[(MongoDB)]
+        I4 --> I7
+        I6 --> I7
+        
+        I2 --> I8[Gemini AI]
+        I4 --> I9[Gemini AI]
+    end
+    
+    style Auth fill:#E6F3FF
+    style Interview fill:#FFF4E6
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: Database Schema -->
+    <div class="slide">
+        <h2 class="slide-title">Database Schema</h2>
+        <div class="diagram-wrapper">
+            <div class="mermaid">
+erDiagram
+    USER ||--o{ INTERVIEW : has
+    USER {
+        ObjectId _id PK
+        string name
+        string email UK
+        string password
+        date createdAt
+    }
+    INTERVIEW {
+        ObjectId _id PK
+        ObjectId userId FK
+        array history
+        object metadata
+        date createdAt
+    }
+    HISTORY_ENTRY {
+        string question
+        string answer
+        number score
+        string scoreReason
+    }
+    METADATA {
+        string level
+        string domain
+        number maxQuestions
+    }
+    
+    INTERVIEW ||--o{ HISTORY_ENTRY : contains
+    INTERVIEW ||--|| METADATA : has
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: Security Flow -->
+    <div class="slide">
+        <h2 class="slide-title">Security Architecture</h2>
+        <div class="diagram-wrapper">
+            <div class="mermaid">
+flowchart TD
+    User[User] --> Login[Login Request]
+    Login --> Validate[Validate Credentials]
+    Validate -->|Valid| Generate[Generate JWT Token]
+    Generate --> Store[Store Token]
+    
+    Store --> Request[API Request]
+    Request --> Header[Authorization Header]
+    Header --> Middleware[Auth Middleware]
+    
+    Middleware --> Verify[Verify Token]
+    Verify -->|Valid| Attach[Attach User ID]
+    Verify -->|Invalid| Unauthorized[401 Unauthorized]
+    
+    Attach --> Controller[Controller]
+    Controller --> Resource[Check Ownership]
+    Resource -->|Owned| Allow[Allow Access]
+    Resource -->|Not Owned| Forbidden[403 Forbidden]
+    
+    style Generate fill:#90EE90
+    style Allow fill:#87CEEB
+    style Unauthorized fill:#FFB6C1
+    style Forbidden fill:#FFB6C1
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 8: Technology Stack -->
+    <div class="slide">
+        <h2 class="slide-title">Technology Stack</h2>
+        <div class="diagram-wrapper">
+            <div class="mermaid">
+mindmap
+  root((VisionHire))
+    Frontend
+      React 19
+      Vite 7
+      React Router
+      CSS3
+      Speech Recognition
+    Backend
+      Node.js
+      Express.js
+      JWT Auth
+      bcrypt
+    Database
+      MongoDB
+      Mongoose
+    AI Services
+      Google Gemini
+      Question Generation
+      Answer Evaluation
+    Development
+      npm
+      Nodemon
+      ESLint
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#667eea',
+                primaryTextColor: '#fff',
+                primaryBorderColor: '#764ba2',
+                lineColor: '#667eea',
+                secondaryColor: '#f8f9fa',
+                tertiaryColor: '#e1f5ff'
+            },
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+</body>
+</html>
+
