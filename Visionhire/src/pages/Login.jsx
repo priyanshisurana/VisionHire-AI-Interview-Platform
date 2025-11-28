@@ -1,6 +1,7 @@
 import '../assets/styles/Form.css';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getApiUrl } from '../config/api.js';
 
 function Login() {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -24,8 +25,7 @@ function Login() {
     e.preventDefault();
     setMessage('');
     try {
-      const apiBase = window.location.origin.replace(/:[0-9]+$/, ':5000');
-      const response = await fetch(`${apiBase}/api/auth/login`, {
+      const response = await fetch(getApiUrl('/api/auth/login'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

@@ -1,6 +1,7 @@
 import '../assets/styles/Form.css';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getApiUrl } from '../config/api.js';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -31,8 +32,7 @@ function Register() {
     e.preventDefault();
     setMessage('');
     try {
-      const apiBase = window.location.origin.replace(/:[0-9]+$/, ':5000');
-      const response = await fetch(`${apiBase}/api/auth/register`, {
+      const response = await fetch(getApiUrl('/api/auth/register'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

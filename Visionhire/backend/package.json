@@ -147,8 +147,8 @@
     "ws": "^8.17.1"
   },
   "scripts": {
-    "dev": "nodemon/server.js",
-    "start":"node /server.js"
+    "dev": "nodemon server.js",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
