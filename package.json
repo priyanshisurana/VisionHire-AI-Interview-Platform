@@ -1,0 +1,13 @@
+{
+  "name": "visionhire",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm install --prefix backend && npm install --prefix visionhire",
+    "start": ""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
